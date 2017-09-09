@@ -1,4 +1,9 @@
-﻿using System;
+﻿#if ac2010
+using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
+#elif ac2013
+using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+#endif
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -7,11 +12,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
 using Autodesk.AutoCAD.DatabaseServices;
-using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 using Autodesk.AutoCAD.Runtime;
-using ModPlus;
-using mpMsg;
-using mpSettings;
+using ModPlusAPI;
+using ModPlusAPI.Windows;
+using ModPlusAPI.Windows.Helpers;
 
 namespace mpSummLength
 {
@@ -26,21 +30,12 @@ namespace mpSummLength
         public MpSummLength()
         {
             InitializeComponent();
-            MpWindowHelpers.OnWindowStartUp(
-                this,
-                MpSettings.GetValue("Settings", "MainSet", "Theme"),
-                MpSettings.GetValue("Settings", "MainSet", "AccentColor"),
-                MpSettings.GetValue("Settings", "MainSet", "BordersType")
-                );
-        }
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            ((TextBox)sender).SelectAll();
+            this.OnWindowStartUp();
         }
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                this.Close();
+                Close();
         }
         // Курсор попал на окно
         void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
@@ -50,7 +45,7 @@ namespace mpSummLength
         // Курсор попал вне окна
         void MetroWindow_MouseEnter(object sender, MouseEventArgs e)
         {
-            this.Focus();
+            Focus();
         }
         private void MpSummLength_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -62,7 +57,7 @@ namespace mpSummLength
             if (El != null)
             {
                 var text = string.Empty;
-                text += "Общая длина: " + this.TbSumLen.Text + Environment.NewLine;
+                text += "Общая длина: " + TbSumLen.Text + Environment.NewLine;
                 foreach (var entXml in El.Elements("Entity"))
                 {
                     text += entXml.Attribute("name").Value + "\r";
@@ -70,7 +65,7 @@ namespace mpSummLength
                     text += "Общая длина: " + entXml.Attribute("lens").Value;
                     text += Environment.NewLine;
                 }
-                ShowTextWithNotepad(text);
+                ModPlusAPI.IO.String.ShowTextWithNotepad(text, "Сумма длин");
             }
         }
 
@@ -79,13 +74,13 @@ namespace mpSummLength
             // Загрузка сохраненного значения округления (с учетом, что может и не быть)
             try
             {
-                this.SliderResultRound.Value = double.Parse(MpSettings.GetValue("Settings", "SummLength", "Round"));
+                SliderResultRound.Value = double.Parse(UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "SummLength", "Round"));
             }
             catch { }
             // Привязываем данные
             if (El != null)
             {
-                this.LbResult.ItemsSource = El.Elements("Entity");
+                LbResult.ItemsSource = El.Elements("Entity");
                 SetSumm();
             }
         }
@@ -95,12 +90,12 @@ namespace mpSummLength
             try
             {
                 // Результат
-                var sum = Math.Round(SumResult, int.Parse(this.SliderResultRound.Value.ToString(CultureInfo.InvariantCulture)));
-                this.TbSumLen.Text = sum.ToString(CultureInfo.InvariantCulture);
+                var sum = Math.Round(SumResult, int.Parse(SliderResultRound.Value.ToString(CultureInfo.InvariantCulture)));
+                TbSumLen.Text = sum.ToString(CultureInfo.InvariantCulture);
             }
             catch (System.Exception ex)
             {
-                MpExWin.Show(ex);
+                ExceptionBox.Show(ex);
             }
         }
         // Выбор в разделе Объекты
@@ -117,19 +112,16 @@ namespace mpSummLength
                     {
                         using (var tr = doc.TransactionManager.StartTransaction())
                         {
-                            if (selXel != null)
-                            {
-                                var xAttribute = selXel.Attribute("obj");
-                                if (xAttribute != null)
-                                    MpCadHelpers.ZoomToEntity(new[] { GetObjectId(db, xAttribute.Value) });
-                            }
+                            var xAttribute = selXel?.Attribute("obj");
+                            if (xAttribute != null)
+                                ModPlus.Helpers.AutocadHelpers.ZoomToEntities(new[] { GetObjectId(db, xAttribute.Value) });
                             tr.Commit();
                         }
                     }
                 }
                 catch (System.Exception ex)
                 {
-                    MpExWin.Show(ex);
+                    ExceptionBox.Show(ex);
                 }
             }
         }
@@ -140,21 +132,6 @@ namespace mpSummLength
             db.TryGetObjectId(h, out id);//TryGetObjectId﻿ method
             return id;
         }
-        /// <summary>
-        /// Показать текст в блокноте (без сохранения на диск)
-        /// </summary>
-        /// <param name="text">Отображамый текст (должен быть со всеми управляющими символами типа \n, \r)</param>
-        private static void ShowTextWithNotepad(string text)
-        {
-            var process = new Process { StartInfo = { FileName = @"notepad.exe" }, EnableRaisingEvents = true };
-            process.Start(); // It will start Notepad process
-            process.WaitForInputIdle(10000);
-            if (process.Responding) // If currently started process(notepad) is responding
-            {
-                System.Windows.Forms.SendKeys.SendWait(text);
-                // It will Add all the text from text variable to notepad 
-            }
-        }
 
         private void SliderResultRound_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -164,29 +141,29 @@ namespace mpSummLength
         private void MpSummLength_OnClosed(object sender, EventArgs e)
         {
             // Сохраняем значение округления
-            MpSettings.SetValue("Settings", "SummLength", "Round", this.SliderResultRound.Value.ToString(CultureInfo.InvariantCulture), true);
+            UserConfigFile.SetValue(UserConfigFile.ConfigFileZone.Settings, "SummLength", "Round", SliderResultRound.Value.ToString(CultureInfo.InvariantCulture), true);
         }
         // Вставить результат в ячейку таблицы
         private void BtAddToTable_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                this.Hide();
-                MpCadHelpers.InsertToAutoCad.AddStrToAutoCadTableCell(this.TbSumLen.Text, string.Empty, true);
+                Hide();
+                ModPlus.Helpers.InsertToAutoCad.AddStringToAutoCadTableCell(TbSumLen.Text, string.Empty, true);
             }
             catch { }
-            finally { this.Show();}
+            finally { Show();}
         }
         // Вставить результат в виде однострочного текста
         private void BtAddAsDbText_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                this.Hide();
-                MpCadHelpers.InsertToAutoCad.InsertDbText(this.TbSumLen.Text.Replace(',', '.').Replace('.', Convert.ToChar(MpVars.MpSeparator)));
+                Hide();
+                ModPlus.Helpers.InsertToAutoCad.InsertDbText(TbSumLen.Text.Replace(',', '.').Replace('.', Convert.ToChar(ModPlusAPI.Variables.Separator)));
             }
             catch { }
-            finally { this.Show(); }
+            finally { Show(); }
         }
 
     }
@@ -198,13 +175,15 @@ namespace mpSummLength
         [CommandMethod("ModPlus", "mpSummLength", CommandFlags.UsePickSet)]
         public void StartFunction()
         {
-            double sumLen;
-            List<string> entities;
-            List<int> count;
-            List<double> lens;
-            List<List<ObjectId>> objIds;
-            MpCadHelpers.GetFromAutoCad.GetLenFromEntities(out sumLen, out entities, out count, out lens, out objIds);
-            if (sumLen != 0.0)
+            Statistic.SendCommandStarting(new Interface());
+
+            ModPlus.Helpers.GetFromAutoCAD.GetLenFromEntities(
+                out double sumLen, 
+                out List<string> entities, 
+                out List<int> count, 
+                out List<double> lens, 
+                out List<List<ObjectId>> objIds);
+            if (Math.Abs(sumLen) > 0.000001)
             {
                 var xEl = new XElement("MpSummLenght");
                 xEl.SetAttributeValue("sum", sumLen);
