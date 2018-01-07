@@ -19,11 +19,9 @@ using ModPlusAPI.Windows.Helpers;
 
 namespace mpSummLength
 {
-    /// <summary>
-    /// Логика взаимодействия для MpSummLength.xaml
-    /// </summary>
     public partial class MpSummLength
     {
+        private const string LangItem = "mpSummLength";
         public XElement El;
         public double SumResult;
 
@@ -57,15 +55,15 @@ namespace mpSummLength
             if (El != null)
             {
                 var text = string.Empty;
-                text += "Общая длина: " + TbSumLen.Text + Environment.NewLine;
+                text += ModPlusAPI.Language.GetItem(LangItem, "h2") + " " + TbSumLen.Text + Environment.NewLine;
                 foreach (var entXml in El.Elements("Entity"))
                 {
-                    text += entXml.Attribute("name").Value + "\r";
-                    text += "Количество: " + entXml.Attribute("count").Value + "\r";
-                    text += "Общая длина: " + entXml.Attribute("lens").Value;
+                    text += entXml.Attribute("name").Value + "\r ";
+                    text += ModPlusAPI.Language.GetItem(LangItem, "h4") + " " + entXml.Attribute("count").Value + "\r ";
+                    text += ModPlusAPI.Language.GetItem(LangItem, "h2") + " " + entXml.Attribute("lens").Value;
                     text += Environment.NewLine;
                 }
-                ModPlusAPI.IO.String.ShowTextWithNotepad(text, "Сумма длин");
+                ModPlusAPI.IO.String.ShowTextWithNotepad(text, ModPlusAPI.Language.GetItem(LangItem, "h1"));
             }
         }
 
@@ -74,9 +72,14 @@ namespace mpSummLength
             // Загрузка сохраненного значения округления (с учетом, что может и не быть)
             try
             {
-                SliderResultRound.Value = double.Parse(UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "SummLength", "Round"));
+                SliderResultRound.Value =
+                    double.Parse(UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "SummLength",
+                        "Round"));
             }
-            catch { }
+            catch
+            {
+                // ignore
+            }
             // Привязываем данные
             if (El != null)
             {
@@ -151,7 +154,10 @@ namespace mpSummLength
                 Hide();
                 ModPlus.Helpers.InsertToAutoCad.AddStringToAutoCadTableCell(TbSumLen.Text, string.Empty, true);
             }
-            catch { }
+            catch
+            {
+                // ignore
+            }
             finally { Show();}
         }
         // Вставить результат в виде однострочного текста
@@ -160,9 +166,13 @@ namespace mpSummLength
             try
             {
                 Hide();
-                ModPlus.Helpers.InsertToAutoCad.InsertDbText(TbSumLen.Text.Replace(',', '.').Replace('.', Convert.ToChar(ModPlusAPI.Variables.Separator)));
+                ModPlus.Helpers.InsertToAutoCad.InsertDbText(TbSumLen.Text.Replace(',', '.')
+                    .Replace('.', Convert.ToChar(ModPlusAPI.Variables.Separator)));
             }
-            catch { }
+            catch
+            {
+                // ignore
+            }
             finally { Show(); }
         }
 
@@ -171,6 +181,7 @@ namespace mpSummLength
     public class MpSummLenghtFunction
     {
         MpSummLength _resWin;
+        private const string LangItem = "mpSummLength";
 
         [CommandMethod("ModPlus", "mpSummLength", CommandFlags.UsePickSet)]
         public void StartFunction()
@@ -226,7 +237,15 @@ namespace mpSummLength
         {
             try
             {
-                var _entities = new List<string> {"Отрезок", "Окружность", "Полилиния", "Дуга", "Сплайн", "Эллипс"};
+                var _entities = new List<string>
+                {
+                    Language.GetItem(LangItem, "h9"),
+                    Language.GetItem(LangItem, "h10"),
+                    Language.GetItem(LangItem, "h11"),
+                    Language.GetItem(LangItem, "h12"),
+                    Language.GetItem(LangItem, "h13"),
+                    Language.GetItem(LangItem, "h14")
+                };
                 var entities = new List<string> {"Line", "Circle", "Polyline", "Arc", "Spline", "Ellipse"};
                 return _entities[entities.IndexOf(objName)];
             }
