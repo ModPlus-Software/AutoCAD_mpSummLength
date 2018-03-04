@@ -5,7 +5,6 @@ using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 #endif
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +14,6 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using ModPlusAPI;
 using ModPlusAPI.Windows;
-using ModPlusAPI.Windows.Helpers;
 
 namespace mpSummLength
 {
@@ -28,7 +26,7 @@ namespace mpSummLength
         public MpSummLength()
         {
             InitializeComponent();
-            this.OnWindowStartUp();
+            Title = ModPlusAPI.Language.GetItem(LangItem, "h1");
         }
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
@@ -44,10 +42,6 @@ namespace mpSummLength
         void MetroWindow_MouseEnter(object sender, MouseEventArgs e)
         {
             Focus();
-        }
-        private void MpSummLength_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
         }
         // Экспорт в текстовый документ
         private void BtExportToTxt_Click(object sender, RoutedEventArgs e)
