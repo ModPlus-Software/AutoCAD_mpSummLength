@@ -1,8 +1,4 @@
-﻿#if ac2010
-using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
-#elif ac2013
-using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
-#endif
+﻿using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -28,11 +24,7 @@ namespace mpSummLength
             InitializeComponent();
             Title = ModPlusAPI.Language.GetItem(LangItem, "h1");
         }
-        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                Close();
-        }
+        
         // Курсор попал на окно
         void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
         {
