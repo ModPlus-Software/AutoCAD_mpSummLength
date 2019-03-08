@@ -172,7 +172,7 @@ namespace mpSummLength
         [CommandMethod("ModPlus", "mpSummLength", CommandFlags.UsePickSet)]
         public void StartFunction()
         {
-            Statistic.SendCommandStarting(new Interface());
+            Statistic.SendCommandStarting(new ModPlusConnector());
 
             ModPlus.Helpers.GetFromAutoCAD.GetLenFromEntities(
                 out double sumLen, 
