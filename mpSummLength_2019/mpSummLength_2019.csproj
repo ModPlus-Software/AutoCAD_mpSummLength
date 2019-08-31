@@ -79,23 +79,28 @@
 	-->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\mpSummLength_2013\EntitiesCollection.cs">
+      <Link>EntitiesCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\mpSummLength_2013\EntityInfo.cs">
+      <Link>EntityInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\mpSummLength_2013\MainViewModel.cs">
+      <Link>MainViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\mpSummLength_2013\MainWindow.xaml.cs">
+      <Link>MainWindow.xaml.cs</Link>
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\mpSummLength_2013\ModPlusConnector.cs">
       <Link>ModPlusConnector.cs</Link>
-    </Compile>
-    <Compile Include="..\mpSummLength_2013\MpSummLength.xaml.cs">
-      <Link>MpSummLength.xaml.cs</Link>
-      <DependentUpon>MpSummLength.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\mpSummLength_2013\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="..\mpSummLength_2013\MpSummLength.xaml">
-      <Link>MpSummLength.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    <Compile Include="..\mpSummLength_2013\SumLengthFunction.cs">
+      <Link>SumLengthFunction.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="..\mpSummLength_2013\Resources\mpSummLength_16x16.png">
@@ -110,6 +115,13 @@
     <Resource Include="..\mpSummLength_2013\Resources\mpSummLength_32x32_dark.png">
       <Link>Resources\mpSummLength_32x32_dark.png</Link>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\mpSummLength_2013\MainWindow.xaml">
+      <Link>MainWindow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
