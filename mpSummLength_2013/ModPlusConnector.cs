@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using ModPlusAPI.Interfaces;
-
+﻿#pragma warning disable SA1600 // Elements should be documented
 namespace mpSummLength
 {
+    using System;
+    using System.Collections.Generic;
+    using ModPlusAPI.Interfaces;
+
     public class ModPlusConnector : IModPlusFunctionInterface
     {
         public SupportedProduct SupportedProduct => SupportedProduct.AutoCAD;
@@ -61,3 +62,4 @@ namespace mpSummLength
         public List<string> SubClassNames => new List<string>();
     }
 }
+#pragma warning restore SA1600 // Elements should be documented

@@ -47,7 +47,8 @@
             get => _precision;
             set
             {
-                if (Equals(value, _precision)) return;
+                if (Equals(value, _precision))
+                    return;
                 _precision = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SumLengths));
@@ -55,6 +56,7 @@
                 {
                     entitiesCollection.RaiseSumLengthChanged();
                 }
+
                 UserConfigFile.SetValue(LangItem, nameof(Precision), value.ToString(), true);
             }
         }
@@ -107,6 +109,7 @@
                 if (collection.Entities.Any())
                     EntitiesCollections.Add(collection);
             }
+
             OnPropertyChanged(nameof(SumLengths));
         }
         
@@ -160,6 +163,7 @@
                                          $"{entitiesCollection.SumLength.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator)}");
                 stringBuilder.AppendLine();
             }
+
             ModPlusAPI.IO.String.ShowTextWithNotepad(stringBuilder.ToString(), Language.GetItem(LangItem, "h1"));
         }
     }

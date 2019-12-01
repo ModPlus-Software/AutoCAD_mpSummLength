@@ -81,21 +81,21 @@
             switch (ent.GetType().Name)
             {
                 case "Line":
-                    return ((Line) ent).Length;
+                    return ((Line)ent).Length;
                 case "Circle":
-                    return ((Circle) ent).Circumference;
+                    return ((Circle)ent).Circumference;
                 case "Polyline":
-                    return ((Polyline) ent).Length;
+                    return ((Polyline)ent).Length;
                 case "Arc":
-                    return ((Arc) ent).Length;
+                    return ((Arc)ent).Length;
                 case "Spline":
                     return
-                        ((Curve) ent).GetDistanceAtParameter(((Curve) ent).EndParam) -
-                        ((Curve) ent).GetDistanceAtParameter(((Curve) ent).StartParam);
+                        ((Curve)ent).GetDistanceAtParameter(((Curve)ent).EndParam) -
+                        ((Curve)ent).GetDistanceAtParameter(((Curve)ent).StartParam);
                 case "Ellipse":
                     return
-                        ((Curve) ent).GetDistanceAtParameter(((Curve) ent).EndParam) -
-                        ((Curve) ent).GetDistanceAtParameter(((Curve) ent).StartParam);
+                        ((Curve)ent).GetDistanceAtParameter(((Curve)ent).EndParam) -
+                        ((Curve)ent).GetDistanceAtParameter(((Curve)ent).StartParam);
                 default:
                     return double.NaN;
             }
