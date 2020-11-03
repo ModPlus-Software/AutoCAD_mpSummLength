@@ -16,7 +16,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mpSummLength" IsAsynchronous="False"/>
+            <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mpSummLength"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -99,7 +99,11 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <!-- zoom -->
-                                                    <Button Grid.Column="0" MinHeight="0" MinWidth="0" Padding="2" Margin="2 0"
+                                                    <Button Grid.Column="0" 
+                                                            MinHeight="0"
+                                                            MinWidth="0" 
+                                                            Padding="2" 
+                                                            Margin="2 0"
                                                             ToolTip="{Binding Source={StaticResource Lang}, XPath=h16}"
                                                             Command="{Binding Path=ZoomCommand}"
                                                             Style="{DynamicResource ModPlusFlatButton}">
@@ -111,10 +115,16 @@
                                                         </Viewbox>
                                                     </Button>
                                                     <!-- length -->
-                                                    <TextBlock Grid.Column="1" Text="{Binding Source={StaticResource Lang}, XPath=h15}"
-                                                               Margin="2 0 4 0" VerticalAlignment="Center"></TextBlock>
-                                                    <TextBox Grid.Column="2" BorderThickness="0" mps:TextFieldAssist.SelectAllOnFocus="True"
-                                                             Text="{Binding Path=RoundedLength, Mode=OneWay}"></TextBox>
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Source={StaticResource Lang}, XPath=h15}"
+                                                               Margin="2 0 4 0" 
+                                                               VerticalAlignment="Center"/>
+                                                    <TextBox Grid.Column="2" 
+                                                             Margin="0"
+                                                             BorderThickness="0" 
+                                                             mps:TextFieldAssist.SelectAllOnFocus="True"
+                                                             Background="Transparent"
+                                                             Text="{Binding Path=RoundedLength, Mode=OneWay}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>

@@ -4,10 +4,13 @@
 
     public partial class MainWindow
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-            Title = ModPlusAPI.Language.GetItem("mpSummLength", "h1");
+            Title = ModPlusAPI.Language.GetItem("h1");
         }
         
         // Курсор попал на окно
@@ -15,6 +18,7 @@
         {
             Autodesk.AutoCAD.Internal.Utils.SetFocusToDwgView();
         }
+
         // Курсор попал вне окна
         private void MetroWindow_MouseEnter(object sender, MouseEventArgs e)
         {

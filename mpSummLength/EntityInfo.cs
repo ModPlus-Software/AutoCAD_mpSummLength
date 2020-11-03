@@ -43,14 +43,14 @@
         /// <summary>
         /// Zoom this entity
         /// </summary>
-        public ICommand ZoomCommand => new RelayCommand(Zoom);
+        public ICommand ZoomCommand => new RelayCommandWithoutParameter(Zoom);
 
         public void RaiseRoundLengthChanged()
         {
             OnPropertyChanged(nameof(RoundedLength));
         }
 
-        private void Zoom(object o)
+        private void Zoom()
         {
             try
             {

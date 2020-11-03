@@ -29,17 +29,17 @@
         /// <summary>
         /// Add to table command
         /// </summary>
-        public ICommand AddToTableCommand => new RelayCommand(AddToTable);
+        public ICommand AddToTableCommand => new RelayCommandWithoutParameter(AddToTable);
 
         /// <summary>
         /// Add as DBText command
         /// </summary>
-        public ICommand AddAsDbTextCommand => new RelayCommand(AddAsDbText);
+        public ICommand AddAsDbTextCommand => new RelayCommandWithoutParameter(AddAsDbText);
 
         /// <summary>
         /// Export to Notepad command
         /// </summary>
-        public ICommand ExportToNotepadCommand => new RelayCommand(ExportToNotepad);
+        public ICommand ExportToNotepadCommand => new RelayCommandWithoutParameter(ExportToNotepad);
 
         /// <summary>Округление</summary>
         public int Precision
@@ -113,7 +113,7 @@
             OnPropertyChanged(nameof(SumLengths));
         }
         
-        private void AddToTable(object o)
+        private void AddToTable()
         {
             try
             {
@@ -132,7 +132,7 @@
             }
         }
 
-        private void AddAsDbText(object o)
+        private void AddAsDbText()
         {
             try
             {
@@ -150,7 +150,7 @@
             }
         }
 
-        private void ExportToNotepad(object o)
+        private void ExportToNotepad()
         {
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine(

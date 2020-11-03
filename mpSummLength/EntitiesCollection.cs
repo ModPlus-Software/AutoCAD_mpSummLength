@@ -9,7 +9,6 @@
     {
         private readonly MainViewModel _mainViewModel;
         private double _entityInfoLength = double.NaN;
-        private const string LangItem = "mpSummLength";
 
         public EntitiesCollection(MainViewModel mainViewModel, string entName)
         {
@@ -67,17 +66,17 @@
             switch (name)
             {
                 case "Line":
-                    return Language.GetItem(LangItem, "h9");
+                    return Language.GetItem("h9");
                 case "Circle":
-                    return Language.GetItem(LangItem, "h10");
+                    return Language.GetItem("h10");
                 case "Polyline":
-                    return Language.GetItem(LangItem, "h11");
+                    return Language.GetItem("h11");
                 case "Arc":
-                    return Language.GetItem(LangItem, "h12");
+                    return Language.GetItem("h12");
                 case "Spline":
-                    return Language.GetItem(LangItem, "h13");
+                    return Language.GetItem("h13");
                 case "Ellipse":
-                    return Language.GetItem(LangItem, "h13");
+                    return Language.GetItem("h14");
                 default:
                     return name;
             }

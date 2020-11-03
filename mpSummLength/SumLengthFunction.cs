@@ -1,6 +1,5 @@
 ﻿namespace mpSummLength
 {
-    using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
     using System.Collections.Generic;
     using System.Linq;
     using Autodesk.AutoCAD.DatabaseServices;
@@ -8,6 +7,7 @@
     using Autodesk.AutoCAD.Runtime;
     using ModPlusAPI;
     using ModPlusAPI.Windows;
+    using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
     public class SumLengthFunction
     {
@@ -17,14 +17,16 @@
         [CommandMethod("ModPlus", "mpSummLength", CommandFlags.UsePickSet)]
         public void StartFunction()
         {
+#if !DEBUG
             Statistic.SendCommandStarting(new ModPlusConnector());
+#endif
 
             try
             {
                 if (_resWinDataContext == null)
                     _resWinDataContext = new MainViewModel();
                 var selectedEntities = SelectEntities(_resWinDataContext).ToList();
-                
+
                 if (selectedEntities.Any())
                 {
                     _resWinDataContext.AddEntities(selectedEntities);
@@ -63,20 +65,20 @@
             {
                 var selOpts = new PromptSelectionOptions
                 {
-                    MessageForAdding = "\n" + Language.GetItem("AutocadDlls", "msg1")
+                    MessageForAdding = $"\n{Language.GetItem("AutocadDlls", "msg1")}"
                 };
                 TypedValue[] values =
                 {
-                        new TypedValue((int) DxfCode.Operator, "<OR"),
-                        new TypedValue((int) DxfCode.Start, "LINE"),
-                        new TypedValue((int) DxfCode.Start, "POLYLINE"),
-                        new TypedValue((int) DxfCode.Start, "LWPOLYLINE"),
-                        new TypedValue((int) DxfCode.Start, "CIRCLE"),
-                        new TypedValue((int) DxfCode.Start, "ARC"),
-                        new TypedValue((int) DxfCode.Start, "SPLINE"),
-                        new TypedValue((int) DxfCode.Start, "ELLIPSE"),
-                        new TypedValue((int) DxfCode.Operator, "OR>")
-                    };
+                        new TypedValue((int)DxfCode.Operator, "<OR"),
+                        new TypedValue((int)DxfCode.Start, "LINE"),
+                        new TypedValue((int)DxfCode.Start, "POLYLINE"),
+                        new TypedValue((int)DxfCode.Start, "LWPOLYLINE"),
+                        new TypedValue((int)DxfCode.Start, "CIRCLE"),
+                        new TypedValue((int)DxfCode.Start, "ARC"),
+                        new TypedValue((int)DxfCode.Start, "SPLINE"),
+                        new TypedValue((int)DxfCode.Start, "ELLIPSE"),
+                        new TypedValue((int)DxfCode.Operator, "OR>")
+                };
                 var selectionFilter = new SelectionFilter(values);
                 selRes = ed.GetSelection(selOpts, selectionFilter);
             }
