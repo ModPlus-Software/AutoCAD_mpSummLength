@@ -28,24 +28,67 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        
+        <!-- result -->
         <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            
             <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h2}"
-                       Margin="{DynamicResource ModPlusDefaultMargin}" Grid.Column="0" Grid.Row="0"></TextBlock>
-            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=SumLengths, Mode=OneWay}"
-                     mps:TextFieldAssist.SelectAllOnFocus="True"></TextBox>
-            <Slider Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Maximum="10"
+                       Margin="{DynamicResource ModPlusDefaultMargin}"
+                       Grid.Column="0" 
+                       Grid.Row="0"/>
+            
+            <TextBox Grid.Column="1" 
+                     Grid.Row="0"
+                     Text="{Binding Path=SumLengths, Mode=OneWay}"
+                     mps:TextFieldAssist.SelectAllOnFocus="True"
+                     IsReadOnly="True"
+                     Margin="4 4 0 4"
+                     Name="TbSumLengths"/>
+            <ComboBox Grid.Column="2"
+                      Grid.Row="0"
+                      Margin="0 4"
+                      SelectedIndex="{Binding Path=FactorIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      BorderThickness="0 1"
+                      Height="{Binding ElementName=TbSumLengths, Path=ActualHeight}">
+                <ComboBoxItem>0.0001</ComboBoxItem>
+                <ComboBoxItem>0.001</ComboBoxItem>
+                <ComboBoxItem>0.01</ComboBoxItem>
+                <ComboBoxItem>0.1</ComboBoxItem>
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>10</ComboBoxItem>
+                <ComboBoxItem>100</ComboBoxItem>
+                <ComboBoxItem>1000</ComboBoxItem>
+                <ComboBoxItem>10000</ComboBoxItem>
+            </ComboBox>
+            <TextBox Grid.Column="3" 
+                     Grid.Row="0"
+                     Text="{Binding Path=SumLengthWithFactor, Mode=OneWay}"
+                     mps:TextFieldAssist.SelectAllOnFocus="True"
+                     Margin="0 4 4 4"/>
+
+            <Slider Grid.Column="0"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="4"
+                    Maximum="10"
                     Value="{Binding Path=Precision, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                    IsSnapToTickEnabled="True" TickPlacement="TopLeft" SmallChange="1" Minimum="0"
-                    ToolTip="{Binding Source={StaticResource Lang}, XPath=h3}"></Slider>
+                    IsSnapToTickEnabled="True"
+                    TickPlacement="TopLeft"
+                    SmallChange="1" 
+                    Minimum="0"
+                    ToolTip="{Binding Source={StaticResource Lang}, XPath=h3}"/>
         </Grid>
+        
+        <!-- results by entities -->
         <ScrollViewer Grid.Row="1" Grid.Column="0" Margin="4 4 0 4"
                       VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                       Width="350" MaxHeight="300">

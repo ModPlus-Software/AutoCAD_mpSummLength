@@ -41,7 +41,9 @@
         /// </summary>
         public ICommand ExportToNotepadCommand => new RelayCommandWithoutParameter(ExportToNotepad);
 
-        /// <summary>Округление</summary>
+        /// <summary>
+        /// Округление
+        /// </summary>
         public int Precision
         {
             get => _precision;
@@ -52,6 +54,7 @@
                 _precision = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SumLengths));
+                OnPropertyChanged(nameof(SumLengthWithFactor));
                 foreach (var entitiesCollection in EntitiesCollections)
                 {
                     entitiesCollection.RaiseSumLengthChanged();
@@ -61,7 +64,9 @@
             }
         }
 
-        /// <summary>Сумма длин всех примитивов</summary>
+        /// <summary>
+        /// Сумма длин всех примитивов
+        /// </summary>
         public double SumLengths
         {
             get
@@ -79,6 +84,43 @@
                 }
 
                 return Math.Round(_sum, Precision);
+            }
+        }
+
+        /// <summary>
+        /// Сумма длин всех примитивов с множителем
+        /// </summary>
+        public double SumLengthWithFactor
+        {
+            get
+            {
+                if (double.IsNaN(_sum))
+                {
+                    _sum = 0.0;
+                    foreach (var entitiesCollection in EntitiesCollections)
+                    {
+                        foreach (var entityInfo in entitiesCollection.Entities)
+                        {
+                            _sum += entityInfo.Length;
+                        }
+                    }
+                }
+                
+                return Math.Round(_sum * GetFactor(), Precision);
+            }
+        }
+        
+        /// <summary>
+        /// Порядковый индекс множителя
+        /// </summary>
+        public int FactorIndex
+        {
+            get => int.TryParse(UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(FactorIndex)), out var i) ? i : 4;
+            set
+            {
+                UserConfigFile.SetValue(ModPlusConnector.Instance.Name, nameof(FactorIndex), value.ToString(), true);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SumLengthWithFactor));
             }
         }
 
@@ -111,6 +153,34 @@
             }
 
             OnPropertyChanged(nameof(SumLengths));
+            OnPropertyChanged(nameof(SumLengthWithFactor));
+        }
+
+        private double GetFactor()
+        {
+            switch (FactorIndex)
+            {
+                case 0:
+                    return 0.0001;
+                case 1:
+                    return 0.001;
+                case 2:
+                    return 0.01;
+                case 3:
+                    return 0.1;
+                case 4:
+                    return 1;
+                case 5:
+                    return 10;
+                case 6:
+                    return 100;
+                case 7:
+                    return 1000;
+                case 8:
+                    return 10000;
+                default:
+                    return 1;
+            }
         }
         
         private void AddToTable()
@@ -119,7 +189,7 @@
             {
                 MainWindow.Hide();
                 ModPlus.Helpers.InsertToAutoCad.AddStringToAutoCadTableCell(
-                    SumLengths.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator),
+                    SumLengthWithFactor.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator),
                     string.Empty, true);
             }
             catch
@@ -138,7 +208,7 @@
             {
                 MainWindow.Hide();
                 ModPlus.Helpers.InsertToAutoCad.InsertDbText(
-                    SumLengths.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator));
+                    SumLengthWithFactor.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator));
             }
             catch
             {
@@ -154,7 +224,7 @@
         {
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine(
-                $"{Language.GetItem(LangItem, "h2")} {SumLengths.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator)}");
+                $"{Language.GetItem(LangItem, "h2")} {SumLengths.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator)} (* {GetFactor()} = {SumLengthWithFactor.ToString(CultureInfo.InvariantCulture).Replace(".", Variables.Separator)})");
             foreach (var entitiesCollection in EntitiesCollections)
             {
                 stringBuilder.AppendLine(entitiesCollection.EntityLocalName);
